@@ -6,7 +6,9 @@ import threading
 import time
 import random
 from datetime import datetime
+from collections import deque
 
+# Crear la aplicación Flask con la ruta correcta de plantillas
 app = Flask(__name__)
 CORS(app)
 
@@ -22,8 +24,34 @@ orders_data = {
     }
 }
 
+# Sistema de logs de Kafka
+kafka_logs = deque(maxlen=100)  # Mantener los últimos 100 eventos
+offset_counter = 0  # Simular offsets de Kafka
+
 # Productos disponibles
 PRODUCTS = ["Laptop", "Mouse", "Teclado", "Monitor", "Auriculares", "Webcam", "Silla Gamer", "Escritorio"]
+
+def log_kafka_event(event_type, message, metadata=None):
+    """
+    Registra un evento de Kafka en el log
+    event_type: 'PRODUCE', 'CONSUME', 'ACK', 'COMPLETE', 'SYSTEM'
+    """
+    global offset_counter
+    timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    
+    log_entry = {
+        "timestamp": timestamp,
+        "type": event_type,
+        "message": message,
+        "offset": offset_counter,
+        "partition": 0,
+        "metadata": metadata or {}
+    }
+    
+    kafka_logs.append(log_entry)
+    offset_counter += 1
+    
+    return log_entry
 
 def generate_order():
     """Genera un pedido aleatorio"""
@@ -42,6 +70,18 @@ def producer_thread():
         order = generate_order()
         orders_data["stats"]["total_orders"] += 1
         orders_data["pending"].append(order)
+        
+        # Registrar evento de producción en Kafka
+        log_kafka_event(
+            "PRODUCE",
+            f"Nuevo pedido enviado al tópico 'pedidos'",
+            {
+                "order_id": order["id"],
+                "product": order["product"],
+                "quantity": order["quantity"],
+                "topic": "pedidos"
+            }
+        )
 
 def consumer_thread():
     """Simula el consumidor de Kafka"""
@@ -55,6 +95,27 @@ def consumer_thread():
             orders_data["processing"].append(order)
             orders_data["stats"]["processing_orders"] = len(orders_data["processing"])
             
+            # Registrar evento de consumo
+            log_kafka_event(
+                "CONSUME",
+                f"Consumidor leyendo pedido del tópico",
+                {
+                    "order_id": order["id"],
+                    "consumer_group": "order-processing-group",
+                    "topic": "pedidos"
+                }
+            )
+            
+            # Registrar ACK (confirmación de recepción)
+            log_kafka_event(
+                "ACK",
+                f"Confirmación de recepción del pedido #{order['id']}",
+                {
+                    "order_id": order["id"],
+                    "status": "acknowledged"
+                }
+            )
+            
             # Simular procesamiento (2-3 segundos)
             time.sleep(random.uniform(2, 3))
             
@@ -65,6 +126,17 @@ def consumer_thread():
             orders_data["completed"].append(order)
             orders_data["stats"]["processing_orders"] = len(orders_data["processing"])
             orders_data["stats"]["completed_orders"] += 1
+            
+            # Registrar evento de completación
+            log_kafka_event(
+                "COMPLETE",
+                f"Pedido #{order['id']} procesado exitosamente",
+                {
+                    "order_id": order["id"],
+                    "product": order["product"],
+                    "processing_time": f"{random.randint(2, 3)}s"
+                }
+            )
             
             # Mantener solo los últimos 10 completados en la vista
             if len(orders_data["completed"]) > 10:
@@ -85,10 +157,19 @@ def get_stats():
     """API para obtener estadísticas"""
     return jsonify(orders_data["stats"])
 
+@app.route('/api/logs')
+def get_logs():
+    """API para obtener los logs de Kafka"""
+    return jsonify({
+        "logs": list(kafka_logs),
+        "total_events": len(kafka_logs),
+        "current_offset": offset_counter
+    })
+
 @app.route('/api/reset', methods=['POST'])
 def reset_demo():
     """Reinicia la demo"""
-    global orders_data
+    global orders_data, offset_counter
     orders_data = {
         "pending": [],
         "processing": [],
@@ -99,9 +180,17 @@ def reset_demo():
             "processing_orders": 0
         }
     }
+    offset_counter = 0
+    kafka_logs.clear()
+    
+    log_kafka_event("SYSTEM", "Demo reiniciada", {"status": "reset"})
+    
     return jsonify({"status": "reset"})
 
 if __name__ == '__main__':
+    # Registrar evento de inicio
+    log_kafka_event("SYSTEM", "Aplicación iniciada", {"version": "1.0"})
+    
     # Iniciar los threads de productor y consumidor
     producer = threading.Thread(target=producer_thread, daemon=True)
     consumer = threading.Thread(target=consumer_thread, daemon=True)
