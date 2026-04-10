@@ -1,4 +1,4 @@
-#proyecto-final-base-de-datos-II
+# proyecto-final-base-de-datos-II
 
 Deben de tener Nodejs instalado y realizar el comando de 
 npm init -y
