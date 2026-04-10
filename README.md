@@ -1,4 +1,4 @@
-# Charla2-Base-de-Datos-II
+#proyecto-final-base-de-datos-II
 
 Deben de tener Nodejs instalado y realizar el comando de 
 npm init -y
