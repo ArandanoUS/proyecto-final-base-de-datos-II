@@ -1,61 +1,126 @@
-body {
-    font-family: Arial, sans-serif;
+/* RESET */
+* {
     margin: 0;
-    background-color: #f5f5f5;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+/* BODY */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f3f4f6;
+    color: #333;
+}
+
+/* HEADER */
 header {
-    background: #1e1e2f;
+    background: #0f172a; /* azul oscuro moderno */
     color: white;
-    padding: 15px 30px;
+    padding: 15px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+header h2 a {
+    color: #38bdf8; /* azul brillante */
+    font-weight: bold;
+    font-size: 22px;
 }
 
 header a {
-    color: white;
+    color: #e2e8f0;
     text-decoration: none;
     margin-left: 20px;
+    font-weight: 500;
+    transition: 0.2s;
 }
 
+header a:hover {
+    color: #38bdf8;
+}
+
+/* CONTAINER */
 .container {
-    padding: 30px;
+    padding: 40px;
 }
 
+/* TITULOS */
+h1 {
+    margin-bottom: 20px;
+    color: #0f172a;
+}
+
+/* GRID PRODUCTOS */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 25px;
 }
 
+/* TARJETAS */
 .product-card {
     background: white;
     padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     text-align: center;
+    transition: 0.3s;
+    position: relative;
 }
 
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
+
+/* IMAGEN */
 .product-card img {
     width: 100%;
-    height: 150px;
+    height: 160px;
     object-fit: cover;
+    border-radius: 8px;
 }
 
+/* NOMBRE */
+.product-card h3 {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+/* PRECIO */
+.product-card p {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+/* BOTONES */
 button {
-    background: #4CAF50;
+    background: #2563eb;
     border: none;
     padding: 10px 15px;
     color: white;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 6px;
+    transition: 0.2s;
+    font-weight: 500;
 }
 
 button:hover {
-    opacity: 0.9;
+    background: #1d4ed8;
 }
 
+/* BOTÓN ROJO (TRÁFICO) */
+button.danger {
+    background: #ef4444;
+}
+
+button.danger:hover {
+    background: #dc2626;
+}
+
+/* CARRITO BADGE */
 .cart-badge {
     background: red;
     color: white;
@@ -65,4 +130,50 @@ button:hover {
     position: relative;
     top: -10px;
     left: -10px;
+}
+
+/* FLUJO KAFKA */
+.flujo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+/* NODOS */
+.nodo {
+    padding: 15px 25px;
+    background: #e5e7eb;
+    border-radius: 12px;
+    font-weight: bold;
+    transition: 0.3s;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* FLECHA */
+.flecha {
+    font-size: 22px;
+}
+
+/* ESTADOS */
+.activo {
+    background: #22c55e;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(34,197,94,0.7);
+}
+
+.procesando {
+    background: #f59e0b;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(245,158,11,0.7);
+}
+
+/* ANIMACIÓN SUAVE */
+.nodo {
+    transition: all 0.3s ease;
 }

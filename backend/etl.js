@@ -54,13 +54,14 @@ async function ejecutarETL() {
                 BEGIN
                     UPDATE Producto
                     SET Precio = ${producto.precio},
-                        Stock = ${producto.stock}
+                        Stock = ${producto.stock},
+                        Descripcion = ${producto.descripcion}
                     WHERE Nombre = ${producto.nombre}
                 END
                 ELSE
                 BEGIN
-                    INSERT INTO Producto (Nombre, Precio, Stock, Activo)
-                    VALUES (${producto.nombre}, ${producto.precio}, ${producto.stock}, 1)
+                    INSERT INTO Producto (Nombre, Precio, Descripcion,Stock, Activo)
+                    VALUES (${producto.nombre}, ${producto.precio}, ${producto.descripcion}, ${producto.stock}, 1)
                 END
             `;
 

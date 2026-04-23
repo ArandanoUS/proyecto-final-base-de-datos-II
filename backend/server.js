@@ -61,6 +61,22 @@ app.get("/historial/:email", async (req,res)=>{
 // Procesar compra
 app.post("/comprar", async (req, res) => {
     try {
+        const data = req.body;
+
+        await enviarEventoPedido({
+            tipo: "pedido",
+            ...data,
+            fecha: new Date()
+        });
+
+        res.send("Pedido enviado a procesamiento (Kafka) 🚀");
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+});
+
+app.post("/comprar-sync", async (req, res) => {
+    try {
         const {
             nombre,
             email,
@@ -95,19 +111,59 @@ app.post("/comprar", async (req, res) => {
 
         await request.execute("ProcesarCompra");
 
-        await enviarEventoPedido({
-            tipo: "pedido",
-            cliente: nombre,
-            email: email,
-            total: carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0),
-            productos: carrito,
-            fecha: new Date()
-        });
-
-
         res.send("Compra realizada con éxito");
     } catch (error) {
         res.status(400).send(error.message);
+    }
+});
+
+app.post("/simular-trafico", async (req, res) => {
+    try {
+        for (let i = 0; i < 50; i++) {
+
+            const carrito = generarCarrito();
+
+            await axios.post("http://localhost:3000/comprar", {
+                nombre: "Simulado " + i,
+                email: `user${i}@test.com`,
+                direccion: "Auto",
+                ciudad: "Panama",
+                pais: "Panama",
+                codigoPostal: "0000",
+                metodoPago: Math.random() > 0.5 ? "Tarjeta" : "PayPal",
+                numeroTarjeta: "1234567890123456",
+                carrito: carrito
+            });
+        }
+
+        res.send("Tráfico con Kafka generado");
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+app.post("/simular-trafico1", async (req, res) => {
+    try {
+        for (let i = 0; i < 50; i++) {
+
+            const carrito = generarCarrito();
+
+            await axios.post("http://localhost:3000/comprar-sync", {
+                nombre: "Simulado " + i,
+                email: `user${i}@test.com`,
+                direccion: "Auto",
+                ciudad: "Panama",
+                pais: "Panama",
+                codigoPostal: "0000",
+                metodoPago: Math.random() > 0.5 ? "Tarjeta" : "PayPal",
+                numeroTarjeta: "1234567890123456",
+                carrito: carrito
+            });
+        }
+
+        res.send("Tráfico con sin Kafka generado");
+    } catch (err) {
+        res.status(500).send(err.message);
     }
 });
 

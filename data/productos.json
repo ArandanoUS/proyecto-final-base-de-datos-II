@@ -1,7 +1,128 @@
 [
-  { "nombre": "Laptop Pro", "precio": 1200, "stock": 10 },
-  { "nombre": "Mouse Gamer", "precio": 50, "stock": 25 },
-  { "nombre": "Teclado Mecánico", "precio": 80, "stock": 15 },
-  { "nombre": "Monitor 24", "precio": 200, "stock": 8 },
-  { "nombre": "Auriculares", "precio": 70, "stock": 20 }
+  {
+    "nombre": "Laptop Gamer RTX",
+    "descripcion": "16GB RAM - RTX 4060",
+    "precio": 1200.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Laptop Oficina",
+    "descripcion": "8GB RAM - SSD 512GB",
+    "precio": 650.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Mouse Gamer RGB",
+    "descripcion": "7200 DPI",
+    "precio": 45.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Teclado Mecánico Blue",
+    "descripcion": "Switch Blue",
+    "precio": 80.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Teclado Mecánico Red",
+    "descripcion": "Switch Red",
+    "precio": 90.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Monitor 24\"",
+    "descripcion": "Full HD",
+    "precio": 180.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Monitor 27\"",
+    "descripcion": "IPS 144Hz",
+    "precio": 320.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Auriculares Gamer",
+    "descripcion": "7.1 Surround",
+    "precio": 70.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Silla Gamer",
+    "descripcion": "Ergonómica",
+    "precio": 250.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Webcam HD",
+    "descripcion": "1080p",
+    "precio": 60.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Disco SSD 1TB",
+    "descripcion": "NVMe",
+    "precio": 150.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Memoria RAM 16GB",
+    "descripcion": "DDR4",
+    "precio": 85.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Tarjeta Gráfica RTX 4070",
+    "descripcion": "12GB GDDR6",
+    "precio": 750.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Fuente 750W",
+    "descripcion": "Certificación Gold",
+    "precio": 110.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Gabinete RGB",
+    "descripcion": "ATX",
+    "precio": 95.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Prueba",
+    "descripcion": "Prueba de stock",
+    "precio": 9.99,
+    "stock": 500
+  },
+  {
+    "nombre": "Laptop Pro",
+    "descripcion": "8GB RAM - HDD 512GB",
+    "precio": 1200.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Mouse Gamer",
+    "descripcion": "8400 DPI",
+    "precio": 50.00,
+    "stock": 25
+  },
+  {
+    "nombre": "Teclado Mecánico",
+    "descripcion": "Switch Black",
+    "precio": 80.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Monitor 24",
+    "descripcion": "AI integrated Frame Improvement",
+    "precio": 200.00,
+    "stock": 500
+  },
+  {
+    "nombre": "Auriculares",
+    "descripcion": "Basic Blue Headphones",
+    "precio": 70.00,
+    "stock": 500
+  }
 ]

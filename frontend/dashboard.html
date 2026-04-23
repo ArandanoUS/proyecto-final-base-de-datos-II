@@ -30,6 +30,16 @@
     <h2>Top 5 Productos Más Vendidos</h2>
     <div id="topProductos" class="product-grid"></div>
 
+    <div style="margin-bottom: 20px;">
+        <button onclick="simularTrafico()" style="background:red;color:white;padding:10px 15px;border:none;border-radius:5px;">
+            Generar Tráfico (Kafka)
+        </button>
+    </div>
+    <div style="margin-bottom: 20px;">
+        <button onclick="simularTrafico1()" style="background:red;color:white;padding:10px 15px;border:none;border-radius:5px;">
+            Generar Tráfico (No Kafka)
+        </button>
+    </div>
 </div>
 
 <script>
@@ -72,6 +82,30 @@ async function cargarDashboard(){
     });
 }
 
+async function simularTrafico() {
+
+    // 🔥 Animación visual
+    activarNodo("nodo-compra", "activo");
+
+    setTimeout(() => activarNodo("nodo-kafka", "procesando"), 800);
+    setTimeout(() => activarNodo("nodo-finanzas", "procesando"), 1600);
+    setTimeout(() => activarNodo("nodo-db", "activo"), 2400);
+
+    const res = await fetch("http://localhost:3000/simular-trafico", {
+        method: "POST"
+    });
+
+    const msg = await res.text();
+    alert(msg);
+}
+async function simularTrafico1() {
+    const res = await fetch("http://localhost:3000/simular-trafico1", {
+        method: "POST"
+    });
+
+    const msg = await res.text();
+    alert(msg);
+}
 </script>
 
 </body>
