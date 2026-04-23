@@ -1,6 +1,7 @@
 const express = require("express");
 const sql = require("mssql");
 const cors = require("cors");
+const axios = require('axios');
 const { conectarProducer, enviarEventoPedido } = require('./kafka');
 
 (async () => {
@@ -11,6 +12,36 @@ const { conectarProducer, enviarEventoPedido } = require('./kafka');
         console.error("Error conectando Kafka:", err);
     }
 })();
+
+
+const productosDisponibles = [
+    1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+    1002,2002,2003,2004,2005,2006
+];
+
+function generarCarrito() {
+    const cantidadProductos = Math.floor(Math.random() * 4) + 1;
+    const carrito = [];
+    const usados = new Set();
+
+    while (carrito.length < cantidadProductos) {
+        const randomId = productosDisponibles[
+            Math.floor(Math.random() * productosDisponibles.length)
+        ];
+
+        if (!usados.has(randomId)) {
+            usados.add(randomId);
+
+            carrito.push({
+                idProducto: randomId,
+                cantidad: Math.floor(Math.random() * 5) + 1
+            });
+        }
+    }
+
+    return carrito;
+}
+
 
 const app = express();
 app.use(cors());

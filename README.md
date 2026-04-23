@@ -2,7 +2,7 @@
 
 Deben de tener Nodejs instalado y realizar el comando de 
 npm init -y
-npm install express mssql cors kafkajs
+npm install express mssql cors kafkajs axios
 
 Una vez instalado y con el Docker funcionando. ejecutan el archivo .bat
 es necesario que la carpeta kafka que se encuenta dentro del github la muevan al directorio c: antes de empezar.

@@ -17,6 +17,7 @@ const config = {
 function transformarProducto(p) {
     return {
         nombre: p.nombre?.trim(),
+        descripcion: p.descripcion?.trim() || "Sin descripción",
         precio: parseFloat(p.precio),
         stock: parseInt(p.stock)
     };
@@ -24,7 +25,7 @@ function transformarProducto(p) {
 
 // 🔹 VALIDACIÓN
 function esValido(p) {
-    return p.nombre && !isNaN(p.precio) && !isNaN(p.stock);
+    return p.nombre && p.descripcion && !isNaN(p.precio) && !isNaN(p.stock);
 }
 
 // 🔹 ETL PRINCIPAL
@@ -55,12 +56,16 @@ async function ejecutarETL() {
                     UPDATE Producto
                     SET Precio = ${producto.precio},
                         Stock = ${producto.stock},
-                        Descripcion = ${producto.descripcion}
+                        Descripcion = ${producto.descripcion},
+                        Activo = CASE 
+                                    WHEN ${producto.stock} > 0 THEN 1 
+                                    ELSE 0 
+                                 END
                     WHERE Nombre = ${producto.nombre}
                 END
                 ELSE
                 BEGIN
-                    INSERT INTO Producto (Nombre, Precio, Descripcion,Stock, Activo)
+                    INSERT INTO Producto (Nombre, Precio, Descripcion, Stock, Activo)
                     VALUES (${producto.nombre}, ${producto.precio}, ${producto.descripcion}, ${producto.stock}, 1)
                 END
             `;
