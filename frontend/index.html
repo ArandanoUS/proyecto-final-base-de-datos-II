@@ -1,16 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Home - SQL Store</title>
+<title>SQL Store</title>
 <link rel="stylesheet" href="css/estilos.css">
 <script src="js/app.js"></script>
+
+<style>
+/* SECCIÓN KAFKA */
+.kafka-section {
+    margin-top: 40px;
+    padding: 25px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.kafka-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.kafka-buttons button {
+    margin-left: 10px;
+}
+
+/* FLUJO */
+.flujo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.nodo {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    padding: 15px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.flecha {
+    font-size: 20px;
+}
+
+/* ESTADOS */
+.activo {
+    background: #22c55e !important;
+    color: white;
+}
+
+.procesando {
+    background: #f59e0b !important;
+    color: white;
+}
+</style>
+
 </head>
+
 <body onload="cargarTop()">
 
 <header>
     <h2><a href="index.html">SQL Store</a></h2>
     <div>
-        <a href="productos.html">Productos</a>
+        <a>Productos</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="historial.html">Historial</a>
         <a href="carrito.html">
@@ -20,22 +78,25 @@
 </header>
 
 <div class="container">
-    <h1>Top Productos</h1>
-    <div id="topProductos" class="product-grid"></div>
-    <br>
-    <a href="productos.html"><button>Ver Todos los Productos</button></a>
 
-    <div style="margin-bottom: 20px;">
-        <button onclick="simularTrafico()" style="background:red;color:white;padding:10px 15px;border:none;border-radius:5px;">
-            Generar Tráfico (Kafka)
-        </button>
+<h1>Productos Destacados</h1>
+<div id="topProductos" class="product-grid"></div>
+
+<!-- 🔥 SECCIÓN KAFKA PROFESIONAL -->
+<div class="kafka-section">
+
+    <div class="kafka-header">
+        <h2>Simulación de Procesamiento</h2>
+
+        <div class="kafka-buttons">
+            <button class="btn" onclick="simularTrafico()">
+                Kafka
+            </button>
+            <button class="btn" style="background:#6b7280;" onclick="simularTrafico1()">
+                Sin Kafka
+            </button>
+        </div>
     </div>
-    <div style="margin-bottom: 20px;">
-        <button onclick="simularTrafico1()" style="background:red;color:white;padding:10px 15px;border:none;border-radius:5px;">
-            Generar Tráfico (No Kafka)
-        </button>
-    </div>
-    <h2>Flujo de Procesamiento</h2>
 
     <div class="flujo">
         <div class="nodo" id="nodo-compra">🛒 Compra</div>
@@ -46,28 +107,72 @@
         <div class="flecha">➡️</div>
         <div class="nodo" id="nodo-db">✅ Base de Datos</div>
     </div>
+
+</div>
+
 </div>
 
 <script>
+
+function getImage(nombre) {
+    const n = nombre.toLowerCase();
+
+    if (n.includes("laptop")) {
+        return "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400";
+    }
+    if (n.includes("mouse")) {
+        return "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400";
+    }
+    if (n.includes("teclado")) {
+        return "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400";
+    }
+    if (n.includes("monitor")) {
+        return "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400";
+    }
+    if (n.includes("auriculares")) {
+        return "https://images.unsplash.com/photo-1518444028785-8b1c1e5b5f7a?w=400";
+    }
+    if (n.includes("silla")) {
+        return "https://images.unsplash.com/photo-1582582494700-1d1f6f7b1f2c?w=400";
+    }
+    if (n.includes("webcam")) {
+        return "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400";
+    }
+    if (n.includes("ssd")) {
+        return "https://images.unsplash.com/photo-1618424181497-157f25b6ddd5?w=400";
+    }
+    if (n.includes("ram")) {
+        return "https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=400";
+    }
+    if (n.includes("tarjeta")) {
+        return "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=400";
+    }
+    if (n.includes("gabinete")) {
+        return "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400";
+    }
+
+    return "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400";
+}
+
 async function cargarTop() {
     actualizarBadge();
 
     const res = await fetch("http://localhost:3000/dashboard");
     const data = await res.json();
 
-    const top = data.topProductos.slice(0,3);
-
     const cont = document.getElementById("topProductos");
     cont.innerHTML = "";
 
-    top.forEach(p => {
+    data.topProductos.slice(0,4).forEach(p => {
         cont.innerHTML += `
         <div class="product-card">
-            <img src="https://via.placeholder.com/200">
-            <h3>${p.Nombre}</h3>
-            <p>Más vendido</p>
-        </div>
-        `;
+            <img src="${getImage(p.Nombre)}">
+            <div class="product-info">
+                <h3>${p.Nombre}</h3>
+                <p>⭐⭐⭐⭐☆</p>
+                <div class="price">Top ventas</div>
+            </div>
+        </div>`;
     });
 }
 
@@ -75,37 +180,25 @@ function activarNodo(id, clase) {
     const nodo = document.getElementById(id);
     nodo.classList.add(clase);
 
-    setTimeout(() => {
-        nodo.classList.remove(clase);
-    }, 800);
+    setTimeout(() => nodo.classList.remove(clase), 800);
 }
-
 
 async function simularTrafico() {
 
-    // 🔥 Animación visual
     activarNodo("nodo-compra", "activo");
-
     setTimeout(() => activarNodo("nodo-kafka", "procesando"), 800);
     setTimeout(() => activarNodo("nodo-finanzas", "procesando"), 1600);
-    setTimeout(() => activarNodo("nodo-db", "activo"), 2400);    
+    setTimeout(() => activarNodo("nodo-db", "activo"), 2400);
 
-    const res = await fetch("http://localhost:3000/simular-trafico", {
-        method: "POST"
-    });
-
-    const msg = await res.text();
-    alert(msg);
+    const res = await fetch("http://localhost:3000/simular-trafico", { method: "POST" });
+    alert(await res.text());
 }
 
 async function simularTrafico1() {
-    const res = await fetch("http://localhost:3000/simular-trafico1", {
-        method: "POST"
-    });
-
-    const msg = await res.text();
-    alert(msg);
+    const res = await fetch("http://localhost:3000/simular-trafico1", { method: "POST" });
+    alert(await res.text());
 }
+
 </script>
 
 </body>

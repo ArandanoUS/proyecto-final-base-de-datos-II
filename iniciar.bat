@@ -13,6 +13,8 @@ echo.
 echo 2. Iniciando Backend...
 start cmd /k "cd backend && node server.js"
 
+timeout /t 20
+
 echo.
 echo 3. Iniciando Consumer Kafka...
 start cmd /k "cd backend && node consumer.js"

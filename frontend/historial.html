@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Historial - SQL Store</title>
-    <link rel="stylesheet" href="css/estilos.css">
-    <script src="js/app.js"></script>
+<title>Historial</title>
+<link rel="stylesheet" href="css/estilos.css">
+<script src="js/app.js"></script>
 </head>
+
 <body onload="actualizarBadge()">
 
 <header>
@@ -21,47 +22,34 @@
 
 <div class="container">
 
-    <h1>Historial de Compras</h1>
+<h1>Historial</h1>
 
-    <input id="emailBuscar" placeholder="Ingrese su correo">
-    <button onclick="buscarHistorial()">Buscar</button>
+<input id="emailBuscar" placeholder="Correo">
+<button class="btn" onclick="buscarHistorial()">Buscar</button>
 
-    <hr>
-
-    <div id="resultado"></div>
+<div id="resultado"></div>
 
 </div>
 
 <script>
 
-async function buscarHistorial() {
+async function buscarHistorial(){
+    const email=emailBuscar.value;
 
-    const email = document.getElementById("emailBuscar").value;
+    const res=await fetch(`http://localhost:3000/historial/${email}`);
+    const data=await res.json();
 
-    if (!email) {
-        alert("Ingrese un correo");
-        return;
-    }
+    resultado.innerHTML="";
 
-    const res = await fetch(`http://localhost:3000/historial/${email}`);
-    const data = await res.json();
-
-    const cont = document.getElementById("resultado");
-    cont.innerHTML = "";
-
-    if (data.length === 0) {
-        cont.innerHTML = "<p>No se encontraron compras.</p>";
-        return;
-    }
-
-    data.forEach(v => {
-        cont.innerHTML += `
-            <div style="background:white;padding:15px;margin-bottom:10px;border-radius:8px;">
-                <strong>Venta #${v.IdVenta}</strong><br>
-                Fecha: ${new Date(v.Fecha).toLocaleString()}<br>
-                Total: $${v.Total}
+    data.forEach(v=>{
+        resultado.innerHTML+=`
+        <div class="product-card">
+            <div class="product-info">
+                <h3>Compra #${v.IdVenta}</h3>
+                <p>${new Date(v.Fecha).toLocaleString()}</p>
+                <div class="price">$${v.Total}</div>
             </div>
-        `;
+        </div>`;
     });
 }
 

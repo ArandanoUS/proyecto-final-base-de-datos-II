@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pago - SQL Store</title>
-    <link rel="stylesheet" href="css/estilos.css">
-    <script src="js/app.js"></script>
+<title>Pago</title>
+<link rel="stylesheet" href="css/estilos.css">
+<script src="js/app.js"></script>
 </head>
+
 <body onload="inicializarPago()">
 
 <header>
@@ -21,103 +22,53 @@
 
 <div class="container">
 
-    <h1>Finalizar Compra</h1>
+<h1>Finalizar Compra</h1>
 
-    <h2>Resumen del Pedido</h2>
-    <div id="resumen"></div>
-    <h3>Total: $<span id="total"></span></h3>
+<div id="resumen"></div>
 
-    <hr>
+<h2>Total: $<span id="total"></span></h2>
 
-    <h2>Datos del Cliente</h2>
-    <input id="nombre" placeholder="Nombre Completo"><br><br>
-    <input id="email" placeholder="Correo Electrónico"><br><br>
-    <input id="direccion" placeholder="Dirección de Envío"><br><br>
-    <input id="ciudad" placeholder="Ciudad"><br><br>
-    <input id="pais" placeholder="País"><br><br>
-    <input id="codigoPostal" placeholder="Código Postal"><br><br>
+<hr>
 
-    <hr>
+<h2>Datos</h2>
 
-    <h2>Datos de Pago</h2>
-    <input id="numeroTarjeta" placeholder="Número de tarjeta"><br><br>
+<input id="nombre" placeholder="Nombre"><br><br>
+<input id="email" placeholder="Email"><br><br>
+<input id="direccion" placeholder="Dirección"><br><br>
+<input id="numeroTarjeta" placeholder="Tarjeta"><br><br>
 
-    <button id="btnPagar" onclick="procesarPago()" disabled>Pagar</button>
+<button class="btn" id="btnPagar" onclick="procesarPago()" disabled>
+Pagar
+</button>
 
 </div>
 
 <script>
 
-function inicializarPago() {
+function inicializarPago(){
     actualizarBadge();
     renderResumen();
-    validarCampos();
-}
 
-function renderResumen() {
-    const carrito = getCarrito();
-    const resumen = document.getElementById("resumen");
-    resumen.innerHTML = "";
-    let total = 0;
-
-    carrito.forEach(p => {
-        const subtotal = p.Precio * p.cantidad;
-        total += subtotal;
-
-        resumen.innerHTML += `
-            <div>
-                ${p.Nombre} - ${p.cantidad} x $${p.Precio} = $${subtotal}
-            </div>
-        `;
-    });
-
-    document.getElementById("total").innerText = total.toFixed(2);
-}
-
-function validarCampos() {
-    const inputs = document.querySelectorAll("input");
-    inputs.forEach(input => {
-        input.addEventListener("input", () => {
-            const allFilled = Array.from(inputs).every(i => i.value.trim() !== "");
-            document.getElementById("btnPagar").disabled = !allFilled;
+    document.querySelectorAll("input").forEach(i=>{
+        i.addEventListener("input",()=>{
+            const ok=[...document.querySelectorAll("input")].every(x=>x.value.trim());
+            btnPagar.disabled=!ok;
         });
     });
 }
 
-async function procesarPago() {
+function renderResumen(){
+    const c=getCarrito();
+    let t=0, html="";
 
-    const carrito = getCarrito();
-
-    const data = {
-        nombre: document.getElementById("nombre").value,
-        email: document.getElementById("email").value,
-        direccion: document.getElementById("direccion").value,
-        ciudad: document.getElementById("ciudad").value,
-        pais: document.getElementById("pais").value,
-        codigoPostal: document.getElementById("codigoPostal").value,
-        metodoPago: "Tarjeta",
-        numeroTarjeta: document.getElementById("numeroTarjeta").value,
-        carrito: carrito.map(p => ({
-            idProducto: p.IdProducto,
-            cantidad: p.cantidad
-        }))
-    };
-
-    const res = await fetch("http://localhost:3000/comprar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+    c.forEach(p=>{
+        let sub=p.Precio*p.cantidad;
+        t+=sub;
+        html+=`<p>${p.Nombre} x${p.cantidad} = $${sub}</p>`;
     });
 
-    const mensaje = await res.text();
-
-    if (res.ok) {
-        alert("Compra realizada con éxito");
-        localStorage.removeItem("carrito");
-        window.location.href = "index.html";
-    } else {
-        alert("Error: " + mensaje);
-    }
+    resumen.innerHTML=html;
+    total.innerText=t.toFixed(2);
 }
 
 </script>
